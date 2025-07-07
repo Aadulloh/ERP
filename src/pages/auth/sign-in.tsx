@@ -1,45 +1,90 @@
 import { useState } from "react";
-import { authService } from "@service";
+import { Button, Input, Card, Typography, message } from "antd";
+import { authService } from "@services";
+import { useNavigate } from "react-router-dom";
+import { setItem } from "@helpers";
 
-function SignIn() {
+const { Title } = Typography;
+
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const navigate = useNavigate();
 
-  function submit() {
+  const submit = async () => {
+    if (!role) {
+      message.warning("Iltimos, rol tanlang!");
+      return;
+    }
+
     const payload = { email, password };
-    authService.signIn(payload);
-  }
+    try {
+      const res = await authService.signIn(payload, role);
+      if (res.status === 201) {
+        setItem("access_token", res.data.access_token);
+        setItem("role", role);
+        navigate(`/${role}`);
+      }
+    } catch (error) {
+      message.error("Login muvaffaqiyatsiz! Email yoki parol noto'g'ri.");
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Sign In
-        </h2>
-        <form onSubmit={submit} className="space-y-5" action="#">
-          <input
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <Card
+        className="w-full max-w-sm p-5 shadow-lg rounded-xl"
+        style={{ border: "none", background: "#ffffff" }}
+      >
+        <div className="text-center mb-5">
+          <Title level={4} className="text-gray-800">
+            Sign In
+          </Title>
+        </div>
+
+        <div className="space-y-3">
+          <Input
             type="email"
+            placeholder="Email"
+            size="large"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
           />
-          <input
-            type="password"
+
+          <Input.Password
+            placeholder="Password"
+            size="large"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
           />
-          <button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition duration-200"
-            type="submit"
+
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
+          >
+            <option value="">Rolni tanlang</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+            <option value="admin">Admin</option>
+            <option value="lid">Lid</option>
+          </select>
+
+          <Button
+            type="primary"
+            size="large"
+            onClick={submit}
+            block
+            className="bg-gradient-to-r blue-600 rounded-md text-white"
+            style={{ height: "40px", fontSize: "14px" }}
           >
             Submit
-          </button>
-        </form>
-      </div>
+          </Button>
+        </div>
+      </Card>
     </div>
   );
-}
+};
 
 export default SignIn;
