@@ -94,7 +94,21 @@ function GroupModal(props: GroupModalProps) {
         <Form.Item
           name="end_date"
           label="End Date"
-          rules={[{ required: true, message: "Please select an end date" }]}
+          dependencies={["start_date"]}
+          rules={[
+            { required: true, message: "Please select an end date" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                const startDate = getFieldValue("start_date");
+                if (!value || !startDate || value.isAfter(startDate)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject({
+                  message: "End date must be after start date",
+                });
+              },
+            }),
+          ]}
         >
           <DatePicker style={{ width: "100%" }} />
         </Form.Item>
