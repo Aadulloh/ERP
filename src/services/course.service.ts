@@ -1,24 +1,24 @@
 import { apiConfig } from "@api/config";
 import { ApiUrls } from "@api/api-urls";
-import type { GroupFormValues } from "@types";
+import type { CourseFormValues } from "../types/course";
 export const courseService = {
   async getCourses() {
     const res = await apiConfig().getRequest(ApiUrls.COURSES);
     return res;
   },
-  async createGroup(model: GroupFormValues): Promise<any> {
-    const res = await apiConfig().postRequest(ApiUrls.GROUPS, model);
+  async createGroup(model: CourseFormValues): Promise<any> {
+    const res = await apiConfig().postRequest(ApiUrls.COURSES, model);
     return res;
   },
-  async updateGroup(model: GroupFormValues, id: number) {
+  async updateGroup(model: CourseFormValues, id: number) {
     const res = await apiConfig().patchRequest(
-      `${ApiUrls.GROUPS}/${id}`,
+      `${ApiUrls.COURSES}/${id}`,
       model
     );
     return res;
   },
   async deleteGroup(id: number) {
-    const res = await apiConfig().deleteRequest(`${ApiUrls.GROUPS}/${id}`);
+    const res = await apiConfig().deleteRequest(`${ApiUrls.COURSES}/${id}`);
     return res;
   },
 };

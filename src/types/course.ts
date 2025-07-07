@@ -7,6 +7,6 @@ export interface CourseFormValues {
   lesson_duration: string;
 }
 
-export interface Group extends CourseFormValues {
+export interface Course extends CourseFormValues {
   id: number;
 }
