@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Form, Input, DatePicker, Select } from "antd";
 import dayjs from "dayjs";
 import { GroupStatus, type GroupFormValues } from "@types";
+import { courseService } from "../../services/course.service";
+import type { Course } from "../../types/course";
 
 const { Option } = Select;
 
@@ -15,8 +17,9 @@ interface GroupModalProps {
 function GroupModal(props: GroupModalProps) {
   const { visible, onCancel, onSubmit, initialValues } = props;
   const [form] = Form.useForm();
-
+  const [courses, setCourses] = useState<Course[]>([]);
   useEffect(() => {
+    fetchCourses();
     if (visible) {
       form.setFieldsValue({
         ...initialValues,
@@ -48,6 +51,15 @@ function GroupModal(props: GroupModalProps) {
     }
   };
 
+  const fetchCourses = async () => {
+    try {
+      const res = await courseService.getCourses()
+      setCourses(res?.data.courses ?? []);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+    }
+  };
+
   return (
     <Modal
       title={initialValues ? "Update Group" : "Create Group"}
@@ -68,7 +80,7 @@ function GroupModal(props: GroupModalProps) {
           <Input />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           name="course_id"
           label="Course ID"
           rules={[
@@ -81,6 +93,20 @@ function GroupModal(props: GroupModalProps) {
           ]}
         >
           <Input type="number" placeholder="Masalan: 1" />
+        </Form.Item> */}
+
+        <Form.Item
+          name="course_id"
+          label="Course"
+          rules={[{ required: true, message: "Please select a course" }]}
+        >
+          <Select placeholder="Select a course" allowClear>
+            {courses.map((course) => (
+              <Select.Option key={course.id} value={course.id}>
+                {course.title}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item

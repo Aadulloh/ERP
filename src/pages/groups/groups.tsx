@@ -5,7 +5,6 @@ import GroupModal from "./group-modal";
 import { groupService } from "@services";
 import { type Group, type GroupFormValues, GroupStatus } from "@types";
 import { Notification } from "@helpers";
-import { courseService } from "../../services/course.service";
 
 const Groups = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -17,15 +16,6 @@ const Groups = () => {
     pageSize: 5,
     total: 0,
   });
-  
-   const fetchCourse = async () => {
-      try {
-        const res = await courseService.getCourses();
-        console.log(res);
-      } catch (error) {
-        Notification("error", "Guruhlarni yuklashda xatolik yuz berdi");
-      }
-    };
 
   const fetchGroups = async (page: number, pageSize: number) => {
     setLoading(true);
