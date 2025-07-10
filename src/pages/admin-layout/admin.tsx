@@ -40,7 +40,7 @@ const items: MenuProps["items"] = [
   },
   {
     key: "4",
-    icon: React.createElement(ForkOutlined ),
+    icon: React.createElement(ForkOutlined),
     label: <Link to="/admin/branches">Branch</Link>,
   },
   {
@@ -59,7 +59,12 @@ const Admin: React.FC = () => {
     <Layout hasSider>
       <Sider style={siderStyle}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} items={items} />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          items={items}
+        />
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -78,7 +83,7 @@ const Admin: React.FC = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          №1 programmer ©{new Date().getFullYear()} Created by Khuja
+          Footer ©{new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>
