@@ -12,7 +12,6 @@ import * as Yup from "yup";
 import dayjs from "dayjs";
 
 const { Option } = Select;
-// const {mutate, isPending} = useGroupCreate()
 export interface Group {
   name: string;
   course_id: number;
@@ -41,7 +40,6 @@ const validationSchema = Yup.object({
   start_date: Yup.string().required("Start date is required"),
   end_date: Yup.string().required("End date is required"),
 });
-
 
 const GroupModal: React.FC<GroupModalProps> = ({
   visible,
@@ -73,12 +71,12 @@ const GroupModal: React.FC<GroupModalProps> = ({
       >
         {({ setFieldValue, values }) => (
           <Form>
-            <AntForm.Item label="Groups name"  labelCol={{ span: 24 }}>
+            <AntForm.Item label="Groups name" labelCol={{ span: 24 }}>
               <Field as={Input} name="name" placeholder="Groups name" />
               <ErrorMessage name="name" component="div" />
             </AntForm.Item>
 
-            <AntForm.Item label="Course"  labelCol={{ span: 24 }}>
+            <AntForm.Item label="Course" labelCol={{ span: 24 }}>
               <Select
                 value={values.course_id || undefined}
                 onChange={(value) => setFieldValue("course_id", value)}
@@ -94,7 +92,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
               <ErrorMessage name="course_id" component="div" />
             </AntForm.Item>
 
-            <AntForm.Item label="Status"  labelCol={{ span: 24 }}>
+            <AntForm.Item label="Status" labelCol={{ span: 24 }}>
               <Select
                 value={values.status || undefined}
                 onChange={(value) => setFieldValue("status", value)}
@@ -107,7 +105,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
               <ErrorMessage name="status" component="div" />
             </AntForm.Item>
 
-            <AntForm.Item label="Start date"  labelCol={{ span: 24 }}>
+            <AntForm.Item label="Start date" labelCol={{ span: 24 }}>
               <DatePicker
                 style={{ width: "100%" }}
                 value={values.start_date ? dayjs(values.start_date) : undefined}
@@ -118,19 +116,21 @@ const GroupModal: React.FC<GroupModalProps> = ({
               <ErrorMessage name="start_date" component="div" />
             </AntForm.Item>
 
-            <AntForm.Item label="End date"  labelCol={{ span: 24 }}>
+            <AntForm.Item label="End date" labelCol={{ span: 24 }}>
               <DatePicker
                 style={{ width: "100%" }}
                 value={values.end_date ? dayjs(values.end_date) : undefined}
-                onChange={(_, dateString) =>
-                  setFieldValue("end_date", dateString)
-                }
+                onChange={(_, dateString) => {
+                  setFieldValue("end_date", dateString);
+                }}
               />
               <ErrorMessage name="end_date" component="div" />
             </AntForm.Item>
-            <Button type="primary" htmlType="submit" 
-            // loading={isPending} 
-            block>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+            >
               Save
             </Button>
           </Form>
