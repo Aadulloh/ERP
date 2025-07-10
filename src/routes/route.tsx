@@ -1,22 +1,24 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
-  Navigate,
   Route,
   RouterProvider,
 } from "react-router-dom";
-import App from "../App";
+import { lazy } from "react";
 import {
   SignIn,
   SignUp,
-  NotFound,
+  AdminLayout,
   TeacherLayout,
   StudentLayout,
-  AdminLayout,
   Groups,
-  ProtectedLogIn,
   Course,
+  ProtectChildrem,
+  LoginChildren,
+  Branch,
+  Worker,
 } from "@pages";
+const App = lazy(() => import("../App"));
 
 const Router = () => {
   const router = createBrowserRouter(
@@ -25,19 +27,29 @@ const Router = () => {
         <Route
           index
           element={
-            <ProtectedLogIn>
+            <LoginChildren>
               <SignIn />
-            </ProtectedLogIn>
+            </LoginChildren>
           }
         />
         <Route path="sign-up" element={<SignUp />} />
-        <Route path="admin" element={<AdminLayout />}>
-          <Route path="groups" element={<Groups />} />
+        {/* AdminLayout */}
+        <Route
+          path="admin/"
+          element={
+            <ProtectChildrem>
+              <AdminLayout />
+            </ProtectChildrem>
+          }
+        >
+          <Route index element={<Groups />} />
+          {/* <Route path="group" element={<Groups />} /> */}
           <Route path="courses" element={<Course />} />
+          <Route path="branches" element={<Branch />} />
+          <Route path="student" element={<StudentLayout />}></Route>
+          <Route path="teacher" element={<TeacherLayout />}></Route>
         </Route>
-        <Route path="teacher" element={<TeacherLayout />}></Route>
-        <Route path="student" element={<StudentLayout />}></Route>
-        <Route path="*" element={<NotFound />} />
+        <Route path="worker" element={<Worker />}></Route>
       </Route>
     )
   );

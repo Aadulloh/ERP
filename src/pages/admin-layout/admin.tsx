@@ -1,62 +1,87 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { Layout, Menu } from "antd";
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
 import {
+  BookOutlined,
+  ForkOutlined,
+  TeamOutlined,
   UserOutlined,
-  GroupOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Layout, Menu, theme } from "antd";
 
-const { Sider, Header, Content } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 
-const Admin = () => {
-  const navigate = useNavigate();
+const siderStyle: React.CSSProperties = {
+  overflow: "auto",
+  height: "100vh",
+  position: "sticky",
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+  scrollbarWidth: "thin",
+  scrollbarGutter: "stable",
+};
+
+const items: MenuProps["items"] = [
+  {
+    key: "1",
+    icon: React.createElement(UserOutlined),
+    label: <Link to="/admin">Group</Link>,
+  },
+  {
+    key: "2",
+    icon: React.createElement(TeamOutlined),
+    label: <Link to="/admin/student">Students</Link>,
+  },
+  {
+    key: "3",
+    icon: React.createElement(BookOutlined),
+    label: <Link to="/admin/courses">Courses</Link>,
+  },
+  {
+    key: "4",
+    icon: React.createElement(ForkOutlined ),
+    label: <Link to="/admin/branches">Branch</Link>,
+  },
+  {
+    key: "5",
+    icon: React.createElement(UserOutlined),
+    label: <Link to="/admin/teacher">Teacher</Link>,
+  },
+];
+
+const Admin: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   return (
-    <div>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sider width={200} theme="dark">
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["groups"]}
-            style={{ height: "100%", borderRight: 0 }}
-            onClick={({ key }) => {
-              navigate(key);
-            }}
-          >
-            <Menu.Item key="groups" icon={<GroupOutlined />}>
-              Groups
-            </Menu.Item>
-            <Menu.Item key="courses" icon={<UserOutlined />}>
-              Courses
-            </Menu.Item>
-            <Menu.Item key="3" icon={<SettingOutlined />}>
-              Settings
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout style={{ padding: "24px" }}>
-          <Header
+    <Layout hasSider>
+      <Sider style={siderStyle}>
+        <div className="demo-logo-vertical" />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} items={items} />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer }}>
+          <h1 style={{ margin: "0 16px" }}>Admin Panel</h1>
+        </Header>
+        <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+          <div
             style={{
-              background: "#fff",
-              padding: "0 24px",
-              fontWeight: "bold",
-              fontSize: "18px",
-            }}
-          >
-            Admin Panel
-          </Header>
-          <Content
-            style={{
-              background: "#fff",
               padding: 24,
-              margin: 0,
-              minHeight: 280,
+              minHeight: "calc(100vh - 134px)",
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
             }}
           >
             <Outlet />
-          </Content>
-        </Layout>
+          </div>
+        </Content>
+        <Footer style={{ textAlign: "center" }}>
+          №1 programmer ©{new Date().getFullYear()} Created by Khuja
+        </Footer>
       </Layout>
-    </div>
+    </Layout>
   );
 };
 

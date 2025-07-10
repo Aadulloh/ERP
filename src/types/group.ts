@@ -1,21 +1,7 @@
-export const GroupStatus = {
-  NEW: "new",
-  ACTIVE: "active",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled",
-  PENDING: "pending",
-} as const;
-
-export interface GroupFormValues {
+export interface Group {
   name: string;
   course_id: number;
+  status: string;
   start_date: string;
   end_date: string;
-  status: GroupStatus;
-}
-
-export type GroupStatus = (typeof GroupStatus)[keyof typeof GroupStatus];
-
-export interface Group extends GroupFormValues {
-  id: number;
 }

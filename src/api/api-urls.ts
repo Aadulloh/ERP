@@ -1,5 +1,20 @@
 export class ApiUrls {
-  public static LOGIN: string = "/log-in";
+  //Auth
+  public static AUTH: string = "/log-in";
+
+  //groups
   public static GROUPS: string = "/group";
-  public static COURSES: string = "/courses";
+
+  //course
+  public static COURSE: string = "/courses";
+
+  //teacher
+  public static TEACHER: string = "/teacher";
+
+  //student
+  public static STUDENT: string = "/student";
+
+  //barnch
+  public static BRANCH: string = "/branches";
+
 }

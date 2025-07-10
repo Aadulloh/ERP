@@ -1,145 +1,165 @@
-import { useEffect, useState } from "react";
-import { Modal, Form, Input, DatePicker, Select } from "antd";
-import { GroupStatus, type GroupFormValues } from "@types";
-import { courseService } from "@services";
-import type { Course, CourseFormValues } from "@types";
+import React from "react";
+import { Modal, Input, Form as AntForm, Button, Select } from "antd";
+import { Formik, Form, ErrorMessage, useFormikContext, Field } from "formik";
+import * as Yup from "yup";
+import type { Course } from "@types";
 
 const { Option } = Select;
 
 interface CourseModalProps {
   visible: boolean;
-  onCancel: () => void;
-  onSubmit: (values: CourseFormValues) => void;
-  initialValues?: Partial<CourseFormValues>;
+  onClose: () => void;
+  onSubmit: (values: Course) => void;
+  editData?: Course;
 }
 
-function GroupModal(props: CourseModalProps) {
-  const { visible, onCancel, onSubmit, initialValues } = props;
-  const [form] = Form.useForm();
-  const [courses, setCourses] = useState<Course[]>([]);
-  useEffect(() => {
-    fetchCourses();
-    if (visible) {
-      form.setFieldsValue({
-        ...initialValues,
-        // start_date: initialValues?.start_date
-        //   ? dayjs(initialValues.start_date)
-        //   : null,
-        // end_date: initialValues?.end_date
-        //   ? dayjs(initialValues.end_date)
-        //   : null,
-      });
-    }
-  }, [visible, initialValues, form]);
+const validationSchema = Yup.object({
+  title: Yup.string().required("Course title is required"),
+  description: Yup.string().required("Description is required"),
+  price: Yup.number()
+    .typeError("Price must be a whole number")
+    .min(0, "Price cannot be less than 0")
+    .integer("Price must be an integer")
+    .required("Price is required"),
+  duration: Yup.string().required("Duration is required"),
+  lessons_in_a_week: Yup.number()
+    .typeError("Lessons per week must be a whole number")
+    .min(1, "Lessons per week must be at least 1")
+    .integer("Lessons per week must be an integer")
+    .required("Lessons per week is required"),
+  lesson_duration: Yup.string().required("Lesson duration is required"),
+});
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      const formattedValues: GroupFormValues = {
-        ...values,
-        lessons_in_a_week: values.lessons_in_a_week,
-        lesson_duration: values.lesson_duration,
-        duration: values.duration,
-        price: values.price,
-        description: values.description,
-        title: values.title,
-      };
-      onSubmit(formattedValues);
-      form.resetFields();
-    } catch (err) {
-      console.error("Validation error:", err);
-    }
-  };
+const FormikSelect = ({
+  label,
+  name,
+  options,
+}: {
+  label: string;
+  name: keyof Course;
+  options: { value: string | number; label: string }[];
+}) => {
+  const { setFieldValue, values } = useFormikContext<Course>();
 
-  const fetchCourses = async () => {
-    try {
-      const res = await courseService.getCourses();
-      setCourses(res?.data.courses ?? []);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
-    }
+  return (
+    <AntForm.Item label={label} labelCol={{ span: 24 }}>
+      <Select
+        value={values[name] || undefined}
+        onChange={(value) => setFieldValue(name, value)}
+        placeholder={`Select ${label.toLowerCase()}`}
+        allowClear
+      >
+        {options.map((opt) => (
+          <Option key={opt.value} value={opt.value}>
+            {opt.label}
+          </Option>
+        ))}
+      </Select>
+      <ErrorMessage name={name}>
+        {(msg) => <div style={{ color: "red", marginTop: 5 }}>{msg}</div>}
+      </ErrorMessage>
+    </AntForm.Item>
+  );
+};
+
+const CourseModal: React.FC<CourseModalProps> = ({
+  visible,
+  onClose,
+  onSubmit,
+  editData,
+}) => {
+  const initialValues: Course = editData || {
+    title: "",
+    description: "",
+    price: "",
+    duration: "",
+    lessons_in_a_week: "",
+    lesson_duration: "",
   };
 
   return (
     <Modal
-      title={initialValues ? "Update Group" : "Create Group"}
+      title={editData ? "Edit Course" : "Add Course"}
       open={visible}
-      onOk={handleOk}
-      onCancel={() => {
-        form.resetFields();
-        onCancel();
-      }}
-      okText={initialValues ? "Update" : "Create"}
+      onCancel={onClose}
+      footer={null}
+      destroyOnHidden
     >
-      <Form layout="vertical" form={form}>
-        <Form.Item
-          name="name"
-          label="Group Name"
-          rules={[{ required: true, message: "Please enter group name" }]}
-        >
-          <Input />
-        </Form.Item>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {() => (
+          <Form>
+            <AntForm.Item label="Course Title" labelCol={{ span: 24 }}>
+              <Field as={Input} name="title" placeholder="Enter course title" />
+              <ErrorMessage name="title">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
 
-        <Form.Item
-          name="course_id"
-          label="Course"
-          rules={[{ required: true, message: "Please select a course" }]}
-        >
-          <Select placeholder="Select a course" allowClear>
-            {courses.map((course) => (
-              <Select.Option key={course.id} value={course.id}>
-                {course.title}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+            <AntForm.Item label="Price" labelCol={{ span: 24 }}>
+              <Field
+                as={Input}
+                type="number"
+                name="price"
+                placeholder="Enter course price"
+              />
+              <ErrorMessage name="price">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
 
-        <Form.Item
-          name="start_date"
-          label="Start Date"
-          rules={[{ required: true, message: "Please select a start date" }]}
-        >
-          <DatePicker style={{ width: "100%" }} />
-        </Form.Item>
+            <FormikSelect
+              label="Duration"
+              name="duration"
+              options={[
+                { value: "3 months", label: "3 months" },
+                { value: "6 months", label: "6 months" },
+                { value: "12 months", label: "12 months" },
+              ]}
+            />
 
-        <Form.Item
-          name="end_date"
-          label="End Date"
-          dependencies={["start_date"]}
-          rules={[
-            { required: true, message: "Please select an end date" },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                const startDate = getFieldValue("start_date");
-                if (!value || !startDate || value.isAfter(startDate)) {
-                  return Promise.resolve();
-                }
-                return Promise.reject({
-                  message: "End date must be after start date",
-                });
-              },
-            }),
-          ]}
-        >
-          <DatePicker style={{ width: "100%" }} />
-        </Form.Item>
+            <FormikSelect
+              label="Lessons per Week"
+              name="lessons_in_a_week"
+              options={[
+                { value: 3, label: "3" },
+                { value: 5, label: "5" },
+              ]}
+            />
 
-        <Form.Item
-          name="status"
-          label="Status"
-          rules={[{ required: true, message: "Please select a status" }]}
-        >
-          <Select placeholder="Select status">
-            {Object.values(GroupStatus).map((status) => (
-              <Option key={status} value={status}>
-                {status.toUpperCase()}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </Form>
+            <FormikSelect
+              label="Lesson Duration"
+              name="lesson_duration"
+              options={[
+                { value: "2 hours", label: "2 hours" },
+                { value: "4 hours", label: "4 hours" },
+              ]}
+            />
+
+            <AntForm.Item label="Description" labelCol={{ span: 24 }}>
+              <Field
+                as={Input.TextArea}
+                name="description"
+                placeholder="Enter course description"
+                rows={4}
+              />
+              <ErrorMessage name="description">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
+
+            <Button type="primary" htmlType="submit" block>
+              Save
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
-}
+};
 
-export default GroupModal;
+export default CourseModal;

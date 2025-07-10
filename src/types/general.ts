@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
 
-export interface ProtectRoutes {
-  children: ReactNode;
+export interface ProtectedRoute {
+    children: ReactNode
 }
