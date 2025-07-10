@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { Modal, Form, Input, DatePicker, Select } from "antd";
-import dayjs from "dayjs";
 import { GroupStatus, type GroupFormValues } from "@types";
 import { courseService } from "@services";
-import type { Course } from "@types";
+import type { Course, CourseFormValues } from "@types";
 
 const { Option } = Select;
 
-interface GroupModalProps {
+interface CourseModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: GroupFormValues) => void;
-  initialValues?: Partial<GroupFormValues>;
+  onSubmit: (values: CourseFormValues) => void;
+  initialValues?: Partial<CourseFormValues>;
 }
 
-function GroupModal(props: GroupModalProps) {
+function GroupModal(props: CourseModalProps) {
   const { visible, onCancel, onSubmit, initialValues } = props;
   const [form] = Form.useForm();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -23,12 +22,12 @@ function GroupModal(props: GroupModalProps) {
     if (visible) {
       form.setFieldsValue({
         ...initialValues,
-        start_date: initialValues?.start_date
-          ? dayjs(initialValues.start_date)
-          : null,
-        end_date: initialValues?.end_date
-          ? dayjs(initialValues.end_date)
-          : null,
+        // start_date: initialValues?.start_date
+        //   ? dayjs(initialValues.start_date)
+        //   : null,
+        // end_date: initialValues?.end_date
+        //   ? dayjs(initialValues.end_date)
+        //   : null,
       });
     }
   }, [visible, initialValues, form]);
@@ -38,11 +37,12 @@ function GroupModal(props: GroupModalProps) {
       const values = await form.validateFields();
       const formattedValues: GroupFormValues = {
         ...values,
-        course_id: Number(values.course_id),
-        start_date: values.start_date.format("YYYY-MM-DD"),
-        end_date: values.end_date.format("YYYY-MM-DD"),
-        status: values.status,
-        name: values.name,
+        lessons_in_a_week: values.lessons_in_a_week,
+        lesson_duration: values.lesson_duration,
+        duration: values.duration,
+        price: values.price,
+        description: values.description,
+        title: values.title,
       };
       onSubmit(formattedValues);
       form.resetFields();
@@ -79,21 +79,6 @@ function GroupModal(props: GroupModalProps) {
         >
           <Input />
         </Form.Item>
-
-        {/* <Form.Item
-          name="course_id"
-          label="Course ID"
-          rules={[
-            { required: true, message: "Please enter course ID" },
-            {
-              type: "number",
-              transform: (value) => Number(value),
-              message: "Must be a number",
-            },
-          ]}
-        >
-          <Input type="number" placeholder="Masalan: 1" />
-        </Form.Item> */}
 
         <Form.Item
           name="course_id"

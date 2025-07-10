@@ -14,17 +14,26 @@ import {
   StudentLayout,
   AdminLayout,
   Groups,
+  ProtectedLogIn,
+  Course,
 } from "@pages";
 
 const Router = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<App />}>
-        <Route index element={<SignIn />} />
+        <Route
+          index
+          element={
+            <ProtectedLogIn>
+              <SignIn />
+            </ProtectedLogIn>
+          }
+        />
         <Route path="sign-up" element={<SignUp />} />
         <Route path="admin" element={<AdminLayout />}>
           <Route path="groups" element={<Groups />} />
-          <Route index element={<Navigate to="/admin/groups" replace />} />
+          <Route path="courses" element={<Course />} />
         </Route>
         <Route path="teacher" element={<TeacherLayout />}></Route>
         <Route path="student" element={<StudentLayout />}></Route>

@@ -6,18 +6,18 @@ export const courseService = {
     const res = await apiConfig().getRequest(ApiUrls.COURSES);
     return res;
   },
-  async createGroup(model: CourseFormValues): Promise<any> {
+  async createCourse(model: CourseFormValues): Promise<any> {
     const res = await apiConfig().postRequest(ApiUrls.COURSES, model);
     return res;
   },
-  async updateGroup(model: CourseFormValues, id: number) {
+  async updateCourse(model: CourseFormValues, id: number) {
     const res = await apiConfig().patchRequest(
       `${ApiUrls.COURSES}/${id}`,
       model
     );
     return res;
   },
-  async deleteGroup(id: number) {
+  async deleteCourse(id: number) {
     const res = await apiConfig().deleteRequest(`${ApiUrls.COURSES}/${id}`);
     return res;
   },
