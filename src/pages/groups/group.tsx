@@ -81,7 +81,7 @@ function Groups() {
 
   const handleSubmit = async (values: Group) => {
     const payload = {
-      name: values.name,
+      name: values.name.trim(),
       course_id: values.course_id,
       status: values.status,
       start_date: values.start_date,
@@ -130,7 +130,9 @@ function Groups() {
           <Button
             danger
             onClick={() => {
-              if (window.confirm("Are you sure you want to delete this group?")) {
+              if (
+                window.confirm("Are you sure you want to delete this group?")
+              ) {
                 handleDelete(record.id);
               }
             }}
