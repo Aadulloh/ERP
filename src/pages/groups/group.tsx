@@ -4,6 +4,7 @@ import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import GroupModal from "./modal";
 import type { Group } from "@types";
 import { CoursService, GroupService } from "@service";
+import { PopConfirm } from "@components";
 
 interface GroupWithId extends Group {
   id: number;
@@ -127,18 +128,7 @@ function Groups() {
           >
             Edit
           </Button>
-          <Button
-            danger
-            onClick={() => {
-              if (
-                window.confirm("Are you sure you want to delete this group?")
-              ) {
-                handleDelete(record.id);
-              }
-            }}
-          >
-            Delete
-          </Button>
+          <PopConfirm handleDelete={()=>handleDelete(record.id)} />
         </div>
       ),
     },
