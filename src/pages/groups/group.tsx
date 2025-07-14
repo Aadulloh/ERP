@@ -67,6 +67,7 @@ function Groups() {
   }, []);
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
+  //  handlePagination({pagination,setParams});
     fetchGroups(pagination.current!, pagination.pageSize!);
   };
 

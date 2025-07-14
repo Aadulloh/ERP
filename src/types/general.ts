@@ -1,5 +1,11 @@
 import { type ReactNode } from "react";
 
 export interface ProtectedRoute {
-    children: ReactNode
+  children: ReactNode;
 }
+
+export interface Pagination {
+  current: number;
+  size: number;
+}
+
