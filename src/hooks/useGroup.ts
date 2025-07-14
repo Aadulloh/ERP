@@ -4,13 +4,13 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { type Group } from "@types";
+import { type Group, type ParamsType } from "@types";
 
-export const useGroup = () => {
+export const useGroup = (params: ParamsType) => {
   const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: ["groups"],
-    queryFn: async () => GroupService.getGroups(),
+    queryFn: async () => GroupService.getGroups(params),
   });
 
   const useGroupCreate = () => {
