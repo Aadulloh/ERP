@@ -1,44 +1,42 @@
-import { CoursService } from "@service";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { courseService } from "@services";
 import type { Course } from "@types";
 
 export const useCourse = () => {
-  const queryClient = useQueryClient();
-  const { data } = useQuery({
+  const getCourses = useQuery({
     queryKey: ["courses"],
-    queryFn: async () => CoursService.getCourses(),
+    queryFn: async () => courseService.getCourses(),
   });
 
-  const useCourseCreate = () => {
-    return useMutation({
-      mutationFn: async (data: Course) => CoursService.createCourses(data),
+  const createCourse = () =>
+    useMutation({
+      mutationFn: async (course: Course) => courseService.createCourse(course),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        getCourses.refetch();
       },
     });
-  };
-  const useCourseUpdate = () => {
-    return useMutation({
-      mutationFn: async ({ model, id }: { model: Course; id: number }) =>
-        CoursService.updateCourses(model, id),
+
+  const updateCourse = () =>
+    useMutation({
+      mutationFn: async ({ id, data }: { id: number; data: Course }) =>
+        courseService.updateCourse(data, id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        getCourses.refetch();
       },
     });
-  };
-  const useCourseDelete = () => {
-    return useMutation({
-      mutationFn: async (id: number) => CoursService.deleteCourses(id),
+
+  const deleteCourse = () =>
+    useMutation({
+      mutationFn: async (id: number) => courseService.deleteCourse(id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        getCourses.refetch();
       },
     });
-  };
 
   return {
-    data,
-    useCourseCreate,
-    useCourseUpdate,
-    useCourseDelete,
+    getCourses,
+    createCourse,
+    updateCourse,
+    deleteCourse,
   };
 };

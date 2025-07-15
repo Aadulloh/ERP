@@ -1,90 +1,80 @@
-import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import { Layout, Menu } from "antd";
 import {
-  BookOutlined,
-  ForkOutlined,
   TeamOutlined,
-  UserOutlined,
+  DashboardOutlined,
+  SettingOutlined,
+  BranchesOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Layout, Menu, theme } from "antd";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
-const siderStyle: React.CSSProperties = {
-  overflow: "auto",
-  height: "100vh",
-  position: "sticky",
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  scrollbarWidth: "thin",
-  scrollbarGutter: "stable",
-};
-
-const items: MenuProps["items"] = [
+const menuItems = [
   {
-    key: "1",
-    icon: React.createElement(UserOutlined),
-    label: <Link to="/admin">Group</Link>,
-  },
-  {
-    key: "2",
-    icon: React.createElement(TeamOutlined),
-    label: <Link to="/admin/student">Students</Link>,
-  },
-  {
-    key: "3",
-    icon: React.createElement(BookOutlined),
+    key: "courses",
+    icon: <DashboardOutlined />,
     label: <Link to="/admin/courses">Courses</Link>,
   },
   {
-    key: "4",
-    icon: React.createElement(ForkOutlined),
-    label: <Link to="/admin/branches">Branch</Link>,
+    key: "groups",
+    icon: <TeamOutlined />,
+    label: <Link to="/admin/groups">Groups</Link>,
   },
   {
-    key: "5",
-    icon: React.createElement(UserOutlined),
-    label: <Link to="/admin/teacher">Teacher</Link>,
+    key: "branches",
+    icon: <BranchesOutlined />,
+    label: <Link to="/admin/branches">Branches</Link>,
+  },
+  {
+    key: "settings",
+    icon: <SettingOutlined />,
+    label: <Link to="/admin/settings">Sozlamalar</Link>,
   },
 ];
 
-const Admin: React.FC = () => {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+const Admin = () => {
+  const location = useLocation();
+  const selectedKey = menuItems.find((item) =>
+    location.pathname.includes(item.key)
+  )?.key;
 
   return (
-    <Layout hasSider>
-      <Sider style={siderStyle}>
-        <div className="demo-logo-vertical" />
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider breakpoint="lg" collapsedWidth="0">
+        <div
+          className="logo"
+          style={{
+            color: "#fff",
+            textAlign: "center",
+            margin: "16px 0",
+            fontWeight: "bold",
+          }}
+        >
+          ERP Admin
+        </div>
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={items}
+          selectedKeys={selectedKey ? [selectedKey] : []}
+          items={menuItems}
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <h1 style={{ margin: "0 16px" }}>Admin Panel</h1>
+        <Header
+          style={{
+            background: "#fff",
+            padding: 0,
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          Admin Panel
         </Header>
         <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-          <div
-            style={{
-              padding: 24,
-              minHeight: "calc(100vh - 134px)",
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
+          <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
             <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Footer ©{new Date().getFullYear()}
-        </Footer>
       </Layout>
     </Layout>
   );

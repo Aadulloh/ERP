@@ -1,10 +1,10 @@
+import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
-
 interface PopConfirmProps {
-    handleDelete: ()=>void;
+  handleDelete: () => void;
 }
 
-function PopConfirm({handleDelete}:PopConfirmProps) {
+const PopConfirm = ({ handleDelete }: PopConfirmProps) => {
   return (
     <Popconfirm
       title="Delete the task"
@@ -13,9 +13,11 @@ function PopConfirm({handleDelete}:PopConfirmProps) {
       cancelText="No"
       onConfirm={handleDelete}
     >
-      <Button type="primary" danger>Delete</Button>
+      <Button type="primary" danger>
+        <DeleteOutlined />
+      </Button>
     </Popconfirm>
   );
-}
+};
 
 export default PopConfirm;

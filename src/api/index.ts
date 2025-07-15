@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getItem } from "../helpers";
+import { getItem } from "@helpers";
+
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
 });

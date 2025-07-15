@@ -1,26 +1,22 @@
-import { ApiUrls } from "@api/api-urls";
 import { apiConfig } from "@api/config";
-import type { Group, ParamsType } from "@types";
-
-export const GroupService = {
-  async getGroups(params: ParamsType) {
+import { ApiUrls } from "@api/api-urls";
+import type { GroupFormValues, PaginationParams } from "@types";
+export const groupService = {
+  async getGroups(params: PaginationParams): Promise<any> {
     const res = await apiConfig().getRequest(ApiUrls.GROUPS, params);
     return res;
   },
-
-  async createGroup(model: Group) {
+  async createGroup(model: GroupFormValues): Promise<any> {
     const res = await apiConfig().postRequest(ApiUrls.GROUPS, model);
     return res;
   },
-
-  async updateGroup(model: Group, id: number): Promise<any> {
+  async updateGroup(model: GroupFormValues, id: number) {
     const res = await apiConfig().patchRequest(
       `${ApiUrls.GROUPS}/${id}`,
       model
     );
     return res;
   },
-
   async deleteGroup(id: number) {
     const res = await apiConfig().deleteRequest(`${ApiUrls.GROUPS}/${id}`);
     return res;

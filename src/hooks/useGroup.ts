@@ -1,50 +1,44 @@
-import { GroupService } from "@service";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { type Group, type ParamsType } from "@types";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { groupService } from "@services";
+import { type GroupFormValues } from "@types";
+import type { PaginationParams } from "@types";
 
-export const useGroup = (params: ParamsType) => {
-  const queryClient = useQueryClient();
-  const { data } = useQuery({
-    queryKey: ["groups"],
-    queryFn: async () => GroupService.getGroups(params),
+export const useGroup = (params: PaginationParams) => {
+  const getGroups = useQuery({
+    queryKey: ["groups", params],
+    queryFn: async () => groupService.getGroups(params),
   });
 
-  const useGroupCreate = () => {
-    return useMutation({
-      mutationFn: async (data: Group) => GroupService.createGroup(data),
+  const createGroup = () =>
+    useMutation({
+      mutationFn: async (group: GroupFormValues) =>
+        groupService.createGroup(group),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["groups"] });
+        getGroups.refetch();
       },
     });
-  };
 
-  const useGroupUpdate = () => {
-    return useMutation({
-      mutationFn: async ({ model, id }: { model: Group; id: number }) =>
-        GroupService.updateGroup(model, id),
+  const updateGroup = () =>
+    useMutation({
+      mutationFn: async ({ id, data }: { id: number; data: GroupFormValues }) =>
+        groupService.updateGroup(data, id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["groups"] });
+        getGroups.refetch();
       },
     });
-  };
 
-  const useGroupDelete = () => {
-    return useMutation({
-      mutationFn: async (id: number) => GroupService.deleteGroup(id),
+  const deleteGroup = () =>
+    useMutation({
+      mutationFn: async (id: number) => groupService.deleteGroup(id),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["groups"] });
+        getGroups.refetch();
       },
     });
-  };
 
   return {
-    data,
-    useGroupCreate,
-    useGroupDelete,
-    useGroupUpdate,
+    getGroups,
+    createGroup,
+    updateGroup,
+    deleteGroup,
   };
 };

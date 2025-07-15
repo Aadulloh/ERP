@@ -1,6 +1,6 @@
-import { type SignIn } from "@types";
 import { useMutation } from "@tanstack/react-query";
-import { authService } from "@service";
+import { type SignIn } from "@types";
+import { authService } from "@services";
 
 export const useAuth = () => {
   return useMutation({
