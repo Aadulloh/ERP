@@ -7,6 +7,6 @@ export interface BranchFormValues {
 export interface Branch {
   id: number;
   name: string;
-  address: string;
-  call_number: string;
+  address?: string;
+  call_number?: string;
 }

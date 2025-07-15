@@ -1,74 +1,87 @@
-import { Modal, Form, Input } from "antd";
-import { type BranchFormValues } from "@types";
-import { useEffect } from "react";
-import { Notification } from "@helpers";
+import React from "react";
+import { Modal, Input, Form as AntForm, Button } from "antd";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import type { Branch } from "@types";
 
-type Props = {
+interface BranchModalProps {
   visible: boolean;
-  onCancel: () => void;
-  onSubmit: (values: BranchFormValues) => void;
-  initialValues?: BranchFormValues | undefined;
-};
+  onClose: () => void;
+  onSubmit: (values: Branch) => void;
+  editData?: Branch;
+  mode: "create" | "update";
+}
 
-const BranchModal = ({ visible, onCancel, onSubmit, initialValues }: Props) => {
-  const [form] = Form.useForm();
+const validationSchema = Yup.object({
+  name: Yup.string().required("Branch name is required"),
+  address: Yup.string().required("Address is required"),
+  call_number: Yup.string().required("Phone number is required"),
+});
 
-  useEffect(() => {
-    if (visible) {
-      if (initialValues) {
-        form.setFieldsValue(initialValues);
-      } else {
-        form.resetFields();
-      }
-    }
-  }, [visible, initialValues, form]);
-
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      onSubmit(values);
-      form.resetFields();
-    } catch (err) {
-      Notification("error", "Form validation failed");
-    }
+const BranchModal: React.FC<BranchModalProps> = ({
+  visible,
+  onClose,
+  onSubmit,
+  editData,
+}) => {
+  const initialValues: Branch = editData || {
+    id: 0,
+    name: "",
+    address: "",
+    call_number: "",
   };
 
   return (
     <Modal
+      title={editData ? "Edit Branch" : "Add Branch"}
       open={visible}
-      title={initialValues ? "Filialni tahrirlash" : "Yangi filial qo'shish"}
-      onCancel={() => {
-        onCancel();
-        form.resetFields();
-      }}
-      onOk={handleOk}
-      okText={initialValues ? "Saqlash" : "Qo'shish"}
-      cancelText="Bekor qilish"
+      onCancel={onClose}
+      footer={null}
       destroyOnHidden
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          label="Filial nomi"
-          name="name"
-          rules={[{ required: true, message: "Filial nomi majburiy" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Manzil"
-          name="address"
-          rules={[{ required: true, message: "Manzil majburiy" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Telefon"
-          name="phone"
-          rules={[{ required: true, message: "Telefon majburiy" }]}
-        >
-          <Input />
-        </Form.Item>
-      </Form>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {() => (
+          <Form>
+            {/* Branch Name */}
+            <AntForm.Item label="Branch Name" labelCol={{ span: 24 }}>
+              <Field as={Input} name="name" placeholder="Enter branch name" />
+              <ErrorMessage name="name">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
+
+            {/* Address */}
+            <AntForm.Item label="Address" labelCol={{ span: 24 }}>
+              <Field as={Input} name="address" placeholder="Enter address" />
+              <ErrorMessage name="address">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
+
+            {/* Phone Number */}
+            <AntForm.Item label="Phone Number" labelCol={{ span: 24 }}>
+              <Field
+                as={Input}
+                name="call_number"
+                placeholder="Enter phone number"
+              />
+              <ErrorMessage name="call_number">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </AntForm.Item>
+
+            {/* Submit Button */}
+            <Button type="primary" htmlType="submit" block>
+              Save
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Modal>
   );
 };

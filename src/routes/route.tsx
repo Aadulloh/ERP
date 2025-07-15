@@ -27,9 +27,9 @@ const Router = () => {
         <Route
           index
           element={
-            <LoginChildren>
+            // <LoginChildren>
               <SignIn />
-            </LoginChildren>
+            // </LoginChildren>
           }
         />
         <Route path="sign-up" element={<SignUp />} />

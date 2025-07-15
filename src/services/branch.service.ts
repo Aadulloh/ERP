@@ -1,25 +1,25 @@
-import { apiConfig } from "@api/config";
 import { ApiUrls } from "@api/api-urls";
-import type { BranchFormValues } from "@types";
+import { apiConfig } from "@api/config";
+import type { Branch } from "@types";
 
-export const branchService = {
+export const BranchService = {
   async getBranches() {
-    const res = await apiConfig().getRequest(ApiUrls.BRANCHES);
+    const res = await apiConfig().getRequest(ApiUrls.BRANCH);
     return res;
   },
-  async createBranch(model: BranchFormValues): Promise<any> {
-    const res = await apiConfig().postRequest(ApiUrls.BRANCHES, model);
+  async createBranch(model: Branch) {
+    const res = await apiConfig().postRequest(ApiUrls.BRANCH, model);
     return res;
   },
-  async updateBranch(model: BranchFormValues, id: number) {
+  async updateBranch(model: Branch, id: number): Promise<any> {
     const res = await apiConfig().patchRequest(
-      `${ApiUrls.BRANCHES}/${id}`,
+      `${ApiUrls.BRANCH}/${id}`,
       model
     );
     return res;
   },
   async deleteBranch(id: number) {
-    const res = await apiConfig().deleteRequest(`${ApiUrls.BRANCHES}/${id}`);
+    const res = await apiConfig().deleteRequest(`${ApiUrls.BRANCH}/${id}`);
     return res;
   },
 };

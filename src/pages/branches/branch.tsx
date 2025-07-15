@@ -1,165 +1,120 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Popconfirm, Space } from "antd";
-import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
-import { type Branch, type BranchFormValues } from "@types";
-import { Notification } from "@helpers";
-import { useBranch } from "@hooks";
+import { Button, Space, Table, type TablePaginationConfig } from "antd";
 import BranchModal from "./branch-modal";
+import type { Branch } from "@types";
+import { PopConfirm } from "@components";
+import { useLocation } from "react-router-dom";
+import { EditOutlined } from "@ant-design/icons";
+import { useGeneral, useBranch } from "@hooks";
+
+interface BranchWithId extends Branch {
+  id: number;
+}
 
 const Branch = () => {
-  const [branches, setBranches] = useState<Branch[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: 5,
-    total: 0,
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mode, setMode] = useState<"create" | "update">("create");
+  const [editData, setEditData] = useState<BranchWithId | null>(null);
+  const [params, setParams] = useState({
+    page: 1,
+    limit: 10,
   });
 
-  const { getBranches, createBranch, updateBranch, deleteBranch } = useBranch();
-  const createBranchMutation = createBranch();
-  const updateBranchMutation = updateBranch();
-  const deleteBranchMutation = deleteBranch();
+  const location = useLocation();
 
   useEffect(() => {
-    if (getBranches.data?.data?.branch) {
-      const mappedBranches = getBranches.data.data.branch.map(
-        (branch: any) => ({
-          id: branch.id,
-          name: branch.name,
-          address: branch.address,
-          call_number: branch.call_number,
-        })
-      );
-      setBranches(mappedBranches);
-      setPagination((prev) => ({
-        ...prev,
-        total: mappedBranches.length,
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get("page");
+    const limit = searchParams.get("limit");
+    if (page && limit) {
+      setParams(() => ({
+        page: Number(page),
+        limit: Number(limit),
       }));
     }
-    setLoading(getBranches.isLoading);
-  }, [getBranches.data, getBranches.isLoading]);
+  }, [location.search]);
+
+  const { data, useBranchDelete } = useBranch();
+  const { handlePagination } = useGeneral();
+  const { mutate: deleteFn, isPending: isDeleting } = useBranchDelete();
+
+  const deleteItem = (id: number) => {
+    deleteFn(id);
+  };
+
+  const editItem = (record: BranchWithId) => {
+    setEditData(record);
+    setMode("update");
+    setIsModalOpen(true);
+  };
+
+  const toggle = () => {
+    setIsModalOpen(!isModalOpen);
+    if (editData) {
+      setEditData(null);
+    }
+  };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
+    handlePagination({ pagination, setParams });
   };
 
-  const handleCreateOrUpdate = async (values: BranchFormValues) => {
-    try {
-      if (editingBranch) {
-        await updateBranchMutation.mutateAsync({
-          id: editingBranch.id,
-          data: values,
-        });
-        Notification("success", "Filial muvaffaqiyatli yangilandi");
-      } else {
-        await createBranchMutation.mutateAsync(values);
-        Notification("success", "Filial muvaffaqiyatli qo'shildi");
-      }
-      setModalOpen(false);
-      setEditingBranch(null);
-    } catch (err) {
-      Notification("error", "Amalni bajarishda xatolik yuz berdi");
-    }
-  };
-
-  const handleEdit = (branch: Branch) => {
-    setEditingBranch(branch);
-    setModalOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteBranchMutation.mutateAsync(id);
-      Notification("success", "Filial o'chirildi");
-    } catch (err) {
-      Notification("error", "Filialni o'chirishda xatolik yuz berdi");
-    }
-  };
-
-  const columns: ColumnsType<Branch> = [
-    {
-      title: "Filial nomi",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Manzil",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Telefon",
-      dataIndex: "call_number",
-      key: "call_number",
-    },
+  const columns = [
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Address", dataIndex: "address", key: "address" },
+    { title: "Phone Number", dataIndex: "call_number", key: "call_number" },
     {
       title: "Actions",
       key: "actions",
-      render: (_, record) => (
-        <Space>
-          <Button type="link" onClick={() => handleEdit(record)}>
-            Edit
+      render: (_: any, record: BranchWithId) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => editItem(record)}>
+            <EditOutlined />
           </Button>
-          <Popconfirm
-            title="Ishonchingiz komilmi?"
-            okText="Ha"
-            cancelText="Yo'q"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <Button type="link" danger>
-              Delete
-            </Button>
-          </Popconfirm>
+          <PopConfirm
+            onConfirm={() => deleteItem(record.id!)}
+            loading={isDeleting}
+          />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Filiallar ro'yxati</h2>
-        <Button
-          type="primary"
-          onClick={() => {
-            setEditingBranch(null);
-            setModalOpen(true);
+    <>
+      {isModalOpen && (
+        <BranchModal
+          visible={isModalOpen}
+          onClose={toggle}
+          editData={editData ?? undefined}
+          mode={mode}
+          onSubmit={function (values: Branch): void {
+            console.log(values);
+            throw new Error("Function not implemented.");
           }}
-        >
-          Filial qo'shish
+        />
+      )}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">Branchlar ro'yxati</h2>
+        <Button type="primary" onClick={() => setIsModalOpen(true)}>
+          Add Branch
         </Button>
       </div>
 
-      <Table
+      <Table<BranchWithId>
         columns={columns}
-        dataSource={branches}
-        loading={loading}
-        rowKey={(record) => record.id}
-        pagination={pagination}
-        onChange={handleTableChange}
-        bordered
-      />
-
-      <BranchModal
-        visible={modalOpen}
-        onCancel={() => {
-          setModalOpen(false);
-          setEditingBranch(null);
+        dataSource={data?.data.branch}
+        rowKey={(row) => row.id!}
+        pagination={{
+          current: params.page,
+          pageSize: params.limit,
+          total: data?.data.total,
+          showSizeChanger: true,
+          pageSizeOptions: ["3", "4", "5", "10"],
         }}
-        onSubmit={handleCreateOrUpdate}
-        initialValues={
-          editingBranch
-            ? {
-                name: editingBranch.name,
-                address: editingBranch.address,
-                call_number: editingBranch.call_number,
-              }
-            : undefined
-        }
+        onChange={handleTableChange}
       />
-    </div>
+    </>
   );
 };
 

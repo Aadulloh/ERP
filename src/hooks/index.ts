@@ -3,3 +3,5 @@ export * from "./useGroup";
 export * from "./useCourse";
 export * from "./useBranch";
 export * from "./useGeneral";
+export * from "./useTeachers";
+

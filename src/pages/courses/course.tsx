@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Popconfirm, Space } from "antd";
+import { Table, Button, Space } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import { type Course, type CourseFormValues } from "@types";
 import { Notification } from "@helpers";
 import { useCourse } from "@hooks";
 import CourseModal from "./course-modal";
+import { PopConfirm } from "@components";
+import { EditOutlined } from "@ant-design/icons";
 
 const Courses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -116,18 +118,9 @@ const Courses = () => {
       render: (_, record) => (
         <Space>
           <Button type="link" onClick={() => handleEdit(record)}>
-            Edit
+            <EditOutlined />
           </Button>
-          <Popconfirm
-            title="Ishonchingiz komilmi?"
-            okText="Ha"
-            cancelText="Yo'q"
-            onConfirm={() => handleDelete(record.id)}
-          >
-            <Button type="link" danger>
-              Delete
-            </Button>
-          </Popconfirm>
+          <PopConfirm handleDelete={() => handleDelete(record.id)} />
         </Space>
       ),
     },

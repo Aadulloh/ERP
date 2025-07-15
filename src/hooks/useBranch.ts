@@ -1,48 +1,42 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { branchService } from "@services";
-import type { BranchFormValues } from "@types";
+import { BranchService } from "@services";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Branch } from "@types";
 
 export const useBranch = () => {
-  const getBranches = useQuery({
+  const queryClient = useQueryClient();
+  const { data } = useQuery({
     queryKey: ["branches"],
-    queryFn: async () => branchService.getBranches(),
+    queryFn: async () => BranchService.getBranches(),
   });
-
-  const createBranch = () =>
-    useMutation({
-      mutationFn: async (branch: BranchFormValues) =>
-        branchService.createBranch(branch),
+  const useBranchCreate = () => {
+    return useMutation({
+      mutationFn: async (data: Branch) => BranchService.createBranch(data),
       onSuccess: () => {
-        getBranches.refetch();
+        queryClient.invalidateQueries({ queryKey: ["branches"] });
       },
     });
-
-  const updateBranch = () =>
-    useMutation({
-      mutationFn: async ({
-        id,
-        data,
-      }: {
-        id: number;
-        data: BranchFormValues;
-      }) => branchService.updateBranch(data, id),
+  };
+  const useBranchUpdate = () => {
+    return useMutation({
+      mutationFn: async ({ model, id }: { model: Branch; id: number }) =>
+        BranchService.updateBranch(model, id),
       onSuccess: () => {
-        getBranches.refetch();
+        queryClient.invalidateQueries({ queryKey: ["branches"] });
       },
     });
-
-  const deleteBranch = () =>
-    useMutation({
-      mutationFn: async (id: number) => branchService.deleteBranch(id),
+  };
+  const useBranchDelete = () => {
+    return useMutation({
+      mutationFn: async (id: number) => BranchService.deleteBranch(id),
       onSuccess: () => {
-        getBranches.refetch();
+        queryClient.invalidateQueries({ queryKey: ["branches"] });
       },
     });
-
+  };
   return {
-    getBranches,
-    createBranch,
-    updateBranch,
-    deleteBranch,
+    data,
+    useBranchCreate,
+    useBranchUpdate,
+    useBranchDelete,
   };
 };
