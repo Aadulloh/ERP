@@ -17,6 +17,7 @@ import {
   Branches,
   ProtectChildrem,
   LoginChildren,
+  Settings
 } from "@pages";
 const App = lazy(() => import("../App"));
 
@@ -28,7 +29,7 @@ const Router = () => {
           index
           element={
             // <LoginChildren>
-              <SignIn />
+            <SignIn />
             // </LoginChildren>
           }
         />
@@ -45,6 +46,7 @@ const Router = () => {
           <Route path="groups" element={<Groups />} />
           <Route path="courses" element={<Courses />} />
           <Route path="branches" element={<Branches />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         <Route path="teacher" element={<TeacherLayout />}></Route>

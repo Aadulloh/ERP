@@ -29,7 +29,7 @@ const SignIn = () => {
             if (res.status === 201) {
               setItem("access_token", res.data.access_token);
               setItem("role", role);
-              navigate(`/${role}`);
+              navigate(`/${role}/courses`);
             }
           },
         }
