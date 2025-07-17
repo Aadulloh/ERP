@@ -9,8 +9,7 @@ import {
 import type { MenuProps } from "antd";
 import { Button, Layout, Menu, theme } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
-import { logout } from "@api/index";
-
+import { clearStorage } from "../../helpers";
 const { Header, Content, Footer, Sider } = Layout;
 
 const siderStyle: React.CSSProperties = {
@@ -53,6 +52,10 @@ const items: MenuProps["items"] = [
 ];
 
 const Admin: React.FC = () => {
+  const logout = () => {
+    clearStorage();
+    window.location.href = "/";
+  };
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
