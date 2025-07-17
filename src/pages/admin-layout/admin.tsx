@@ -1,5 +1,6 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import {
   BookOutlined,
   ForkOutlined,
@@ -52,9 +53,10 @@ const items: MenuProps["items"] = [
 ];
 
 const Admin: React.FC = () => {
+  const navigate = useNavigate();
   const logout = () => {
     clearStorage();
-    window.location.href = "/";
+  navigate("/");
   };
   const {
     token: { colorBgContainer, borderRadiusLG },
