@@ -51,7 +51,6 @@ const BranchModal: React.FC<BranchModalProps> = ({
       >
         {() => (
           <Form>
-            {/* Branch Name */}
             <AntForm.Item label="Branch Name" labelCol={{ span: 24 }}>
               <Field as={Input} name="name" placeholder="Enter branch name" />
               <ErrorMessage name="name">
@@ -59,7 +58,6 @@ const BranchModal: React.FC<BranchModalProps> = ({
               </ErrorMessage>
             </AntForm.Item>
 
-            {/* Address */}
             <AntForm.Item label="Address" labelCol={{ span: 24 }}>
               <Field as={Input} name="address" placeholder="Enter address" />
               <ErrorMessage name="address">

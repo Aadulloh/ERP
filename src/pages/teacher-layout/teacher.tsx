@@ -108,7 +108,7 @@ function TeacherPage() {
             setMode("create");
           }}
         >
-          + Add Teacher
+          Add Teacher
         </Button>
       </div>
       <Table<Teacher>

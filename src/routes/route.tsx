@@ -42,7 +42,6 @@ const Router = () => {
             </ProtectChildrem>
           }
         >
-          {/* <Route element={<Groups />} /> */}
           <Route path="group" element={<Groups />} />
           <Route path="courses" element={<Course />} />
           <Route path="branches" element={<Branch />} />

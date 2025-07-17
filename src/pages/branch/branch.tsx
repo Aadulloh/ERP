@@ -58,28 +58,30 @@ const Branch = () => {
     }
   };
 
-const handleSubmit = (values: Branch) => {
-  if (mode === "create") {
-    const { id, ...createData } = values;
-    createFn(createData as Omit<Branch, 'id'>, {
-      onSuccess: () => {
-        toggle();
-      },
-    });
-  } else if (mode === "update" && editData) {
-     const updateData = {
-        name: values.name,
-        address: values.address,
-        call_number: values.call_number,
-      };
-      updateFn({ model: updateData, id: editData.id }, {
+  const handleSubmit = (values: Branch) => {
+    if (mode === "create") {
+      const { id, ...createData } = values;
+      createFn(createData as Omit<Branch, "id">, {
         onSuccess: () => {
           toggle();
         },
       });
-  }
-};
-
+    } else if (mode === "update" && editData) {
+      const updateData = {
+        name: values.name,
+        address: values.address,
+        call_number: values.call_number,
+      };
+      updateFn(
+        { model: updateData, id: editData.id },
+        {
+          onSuccess: () => {
+            toggle();
+          },
+        }
+      );
+    }
+  };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
     handlePagination({ pagination, setParams });
@@ -134,7 +136,7 @@ const handleSubmit = (values: Branch) => {
             setMode("create");
           }}
         >
-          + Add Branch
+          Add Branch
         </Button>
       </div>
       <Table<BranchWithId>
