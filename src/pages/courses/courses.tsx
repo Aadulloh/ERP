@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { Button, Space, Table, type TablePaginationConfig } from "antd";
-import type { Teacher } from "@types";
-import TeacherModal from "./teacher-modal";
+import Coursesmodal from "./course-modal";
+import type { Course } from "@types";
 import { PopConfirm } from "@components";
 import { useLocation } from "react-router-dom";
-import { useGeneral, useTeachers, useDeleteTeacher } from "@hooks";
+import { useGeneral, useCourse } from "@hooks";
 import { EditOutlined } from "@ant-design/icons";
 
-function TeacherPage() {
+interface CourseWithId extends Course {
+  id: number;
+}
+
+function Courses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
-  const [editData, setEditData] = useState<Teacher | null>(null);
+  const [editData, setEditData] = useState<CourseWithId | null>(null);
   const [params, setParams] = useState({
     page: 1,
     limit: 10,
@@ -30,15 +34,17 @@ function TeacherPage() {
     }
   }, [location.search]);
 
-  const { data } = useTeachers();
+  const { data, useCourseDelete, useCourseCreate, useCourseUpdate } = useCourse();
   const { handlePagination } = useGeneral();
-  const { mutate: deleteFn, isPending: isDeleting } = useDeleteTeacher();
+  const { mutate: deleteFn, isPending: isDeleting } = useCourseDelete();
+  const { mutate: createFn, isPending: isCreating } = useCourseCreate();
+  const { mutate: updateFn, isPending: isUpdating } = useCourseUpdate();
 
   const deleteItem = (id: number) => {
     deleteFn(id);
   };
 
-  const editItem = (record: Teacher) => {
+  const editItem = (record: CourseWithId) => {
     setEditData(record);
     setMode("update");
     setIsModalOpen(true);
@@ -51,20 +57,53 @@ function TeacherPage() {
     }
   };
 
+  const handleSubmit = (values: Course) => {
+    if (mode === "create") {
+      const { id, ...createData } = values;
+      createFn(createData as Omit<Course, 'id'>, {
+        onSuccess: () => {
+          toggle();
+        },
+      });
+    } else if (mode === "update" && editData) {
+       const updateData = {
+          title: values.title,
+          price: values.price,
+          duration: values.duration,
+          lessons_in_a_week: values.lessons_in_a_week,
+          lesson_duration: values.lesson_duration,
+          description: values.description,
+        };
+        updateFn({ model: updateData, id: editData.id }, {
+          onSuccess: () => {
+            toggle();
+          },
+        });
+    }
+  }
   const handleTableChange = (pagination: TablePaginationConfig) => {
     handlePagination({ pagination, setParams });
   };
 
   const columns = [
-    { title: "First Name", dataIndex: "first_name", key: "first_name" },
-    { title: "Last Name", dataIndex: "last_name", key: "last_name" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Phone", dataIndex: "phone", key: "phone" },
-    { title: "Role", dataIndex: "role", key: "role" },
+    { title: "Title", dataIndex: "title", key: "title" },
+    { title: "Description", dataIndex: "description", key: "description" },
+    { title: "Price", dataIndex: "price", key: "price" },
+    { title: "Duration", dataIndex: "duration", key: "duration" },
+    {
+      title: "Lessons per Week",
+      dataIndex: "lessons_in_a_week",
+      key: "lessons_in_a_week",
+    },
+    {
+      title: "Lesson Duration",
+      dataIndex: "lesson_duration",
+      key: "lesson_duration",
+    },
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: Teacher) => (
+      render: (_: any, record: CourseWithId) => (
         <Space size="middle">
           <Button type="primary" onClick={() => editItem(record)}>
             <EditOutlined />
@@ -81,15 +120,13 @@ function TeacherPage() {
   return (
     <>
       {isModalOpen && (
-        <TeacherModal
+        <Coursesmodal
           visible={isModalOpen}
           onClose={toggle}
+          onSubmit={handleSubmit}
           editData={editData ?? undefined}
           mode={mode}
-          onSubmit={async (values) => {
-            console.log(values);
-            toggle();
-          }}
+          loading={isCreating || isUpdating}
         />
       )}
       <div
@@ -100,21 +137,15 @@ function TeacherPage() {
           alignItems: "center",
         }}
       >
-        <h1>Teachers</h1>
-        <Button
-          type="primary"
-          onClick={() => {
-            setIsModalOpen(true);
-            setMode("create");
-          }}
-        >
-          + Add Teacher
+        <h1>Courses</h1>
+        <Button type="primary" onClick={() => {setIsModalOpen(true); setMode("create");}}>
+          + Add Course
         </Button>
       </div>
-      <Table<Teacher>
+      <Table<CourseWithId>
         bordered
         columns={columns}
-        dataSource={data?.data.teachers}
+        dataSource={data?.data.courses}
         rowKey={(row) => row.id!}
         pagination={{
           current: params.page,
@@ -128,5 +159,4 @@ function TeacherPage() {
     </>
   );
 }
-
-export default TeacherPage;
+export default Courses;

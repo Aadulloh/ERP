@@ -1,44 +1,59 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { groupService } from "@services";
-import { type GroupFormValues } from "@types";
-import type { PaginationParams } from "@types";
-
-export const useGroup = (params: PaginationParams) => {
-  const getGroups = useQuery({
+import { GroupService } from "@service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { type Group, type ParamsType } from "@types";
+import { useNavigate } from "react-router-dom";
+export const useGroup = (params: ParamsType) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data } = useQuery({
     queryKey: ["groups", params],
-    queryFn: async () => groupService.getGroups(params),
+    queryFn: async () => GroupService.getGroups(params),
   });
+  const handlePagination = (pagination: any, setParams: any)=>{
+    const { current, pageSize } = pagination;
+    setParams({
+      page: current!,
+      limit: pageSize!,
+    });
+    const searchParams = new URLSearchParams();
+    searchParams.set("page", current!.toString());
+    searchParams.set("limit", pageSize!.toString());
+    navigate({ search: `?${searchParams.toString()}` });
+  }
 
-  const createGroup = () =>
-    useMutation({
-      mutationFn: async (group: GroupFormValues) =>
-        groupService.createGroup(group),
+  const useGroupCreate = () => {
+    return useMutation({
+      mutationFn: async (data: Group) => GroupService.createGroup(data),
       onSuccess: () => {
-        getGroups.refetch();
+        queryClient.invalidateQueries({ queryKey: ["groups"] });
       },
     });
+  };
 
-  const updateGroup = () =>
-    useMutation({
-      mutationFn: async ({ id, data }: { id: number; data: GroupFormValues }) =>
-        groupService.updateGroup(data, id),
+  const useGroupUpdate = () => {
+    return useMutation({
+      mutationFn: async ({ model, id }: { model: Group; id: number }) =>
+        GroupService.updateGroup(model, id),
       onSuccess: () => {
-        getGroups.refetch();
+        queryClient.invalidateQueries({ queryKey: ["groups"] });
       },
     });
+  };
 
-  const deleteGroup = () =>
-    useMutation({
-      mutationFn: async (id: number) => groupService.deleteGroup(id),
+  const useGroupDelete = () => {
+    return useMutation({
+      mutationFn: async (id: number) => GroupService.deleteGroup(id),
       onSuccess: () => {
-        getGroups.refetch();
+        queryClient.invalidateQueries({ queryKey: ["groups"] });
       },
     });
+  };
 
   return {
-    getGroups,
-    createGroup,
-    updateGroup,
-    deleteGroup,
+    data,
+    useGroupCreate,
+    useGroupDelete,
+    useGroupUpdate,
+    handlePagination,
   };
 };

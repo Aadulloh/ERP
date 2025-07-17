@@ -1,42 +1,46 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { courseService } from "@services";
+import { CoursService } from "@service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Course } from "@types";
 
 export const useCourse = () => {
-  const getCourses = useQuery({
+  const queryClient = useQueryClient();
+  const { data } = useQuery({
     queryKey: ["courses"],
-    queryFn: async () => courseService.getCourses(),
+    queryFn: async () => CoursService.getCourses(),
   });
 
-  const createCourse = () =>
-    useMutation({
-      mutationFn: async (course: Course) => courseService.createCourse(course),
-      onSuccess: () => {
-        getCourses.refetch();
-      },
-    });
 
-  const updateCourse = () =>
-    useMutation({
-      mutationFn: async ({ id, data }: { id: number; data: Course }) =>
-        courseService.updateCourse(data, id),
-      onSuccess: () => {
-        getCourses.refetch();
-      },
-    });
 
-  const deleteCourse = () =>
-    useMutation({
-      mutationFn: async (id: number) => courseService.deleteCourse(id),
+  const useCourseCreate = () => {
+    return useMutation({
+      mutationFn: async (data: Course) => CoursService.createCourses(data),
       onSuccess: () => {
-        getCourses.refetch();
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
       },
     });
+  };
+  const useCourseUpdate = () => {
+    return useMutation({
+      mutationFn: async ({ model, id }: { model: Course; id: number }) =>
+        CoursService.updateCourses(model, id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
+      },
+    });
+  };
+  const useCourseDelete = () => {
+    return useMutation({
+      mutationFn: async (id: number) => CoursService.deleteCourses(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
+      },
+    });
+  };
 
   return {
-    getCourses,
-    createCourse,
-    updateCourse,
-    deleteCourse,
+    data,
+    useCourseCreate,
+    useCourseUpdate,
+    useCourseDelete,
   };
 };

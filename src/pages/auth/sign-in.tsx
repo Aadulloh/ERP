@@ -1,98 +1,116 @@
-import { useState } from "react";
-import { Button, Input, Card, Typography, message } from "antd";
-// import { authService } from "@services";
 import { useNavigate } from "react-router-dom";
-import { setItem } from "@helpers";
+import { setItem } from "../../helpers";
+import { Button, Card, Input, Select, message, Typography } from "antd";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { useAuth } from "@hooks";
 
+const { Option } = Select;
 const { Title } = Typography;
 
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Please enter a valid email address!")
+    .required("Please input your email!"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters!")
+    .required("Please input your password!"),
+  role: Yup.string().required("Please select your role!"),
+});
+
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const { mutate, isPending } = useAuth();
 
-  const submit = async () => {
-    if (!role) {
-      message.warning("Iltimos, rol tanlang!");
-      return;
-    }
-
-    const payload = { email, password };
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
+      const { email, password, role } = values;
       mutate(
-        { data: payload, role },
+        { data: { email, password }, role },
         {
           onSuccess: (res: any) => {
             if (res.status === 201) {
               setItem("access_token", res.data.access_token);
               setItem("role", role);
-              navigate(`/${role}/courses`);
+              navigate(`/${role}`);
             }
           },
         }
       );
     } catch (error) {
-      message.error("Login muvaffaqiyatsiz! Email yoki parol noto'g'ri.");
+      message.error("Login failed. Please check your credentials.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <Card
-        className="w-full max-w-sm p-5 shadow-lg rounded-xl"
-        style={{ border: "none", background: "#ffffff" }}
+    <Card style={{ maxWidth: 400, margin: "0 auto", marginTop: 100 }}>
+      <Title level={3} style={{ textAlign: "center" }}>
+        Sign In
+      </Title>
+
+      <Formik
+        initialValues={{ email: "", password: "", role: "" }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <div className="text-center mb-5">
-          <Title level={4} className="text-gray-800">
-            Sign In
-          </Title>
-        </div>
+        {({ setFieldValue, values, errors, touched }) => (
+          <Form>
+            <div style={{ marginBottom: 16 }}>
+              <label>Email</label>
+              <Field
+                as={Input}
+                name="email"
+                type="email"
+                placeholder="Enter email"
+              />
+              <ErrorMessage name="email">
+                {(msg) => (
+                  <div style={{ color: "red", fontSize: 12 }}>{msg}</div>
+                )}
+              </ErrorMessage>
+            </div>
 
-        <div className="space-y-3">
-          <Input
-            type="email"
-            placeholder="Email"
-            size="large"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+            <div style={{ marginBottom: 16 }}>
+              <label>Password</label>
+              <Field
+                as={Input.Password}
+                name="password"
+                placeholder="Enter password"
+              />
+              <ErrorMessage name="email">
+                {(msg) => (
+                  <div style={{ color: "red", fontSize: 12 }}>{msg}</div>
+                )}
+              </ErrorMessage>
+            </div>
 
-          <Input.Password
-            placeholder="Password"
-            size="large"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <div style={{ marginBottom: 16 }}>
+              <label>Role</label>
+              <Select
+                placeholder="Select role"
+                onChange={(val) => setFieldValue("role", val)}
+                value={values.role || undefined}
+                style={{ width: "100%" }}
+              >
+                <Option value="teacher">Teacher</Option>
+                <Option value="student">Student</Option>
+                <Option value="admin">Admin</Option>
+                <Option value="lid">Lid</Option>
+              </Select>
+              {errors.role && touched.role && (
+                <div style={{ color: "red", fontSize: 12 }}>{errors.role}</div>
+              )}
+            </div>
 
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring focus:ring-blue-200"
-          >
-            <option value="">-- Rolni tanlang --</option>
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
-            <option value="admin">Admin</option>
-            <option value="lid">Lid</option>
-          </select>
-
-          <Button
-            type="primary"
-            size="large"
-            onClick={submit}
-            block
-            className="bg-blue-600 hover:from-blue-700 hover:to-blue-500 rounded-md text-white"
-            style={{ height: "40px", fontSize: "14px" }}
-            loading={isPending}
-          >
-            Submit
-          </Button>
-        </div>
-      </Card>
-    </div>
+            <Button type="primary" htmlType="submit" block loading={isPending}>
+              Sign In
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </Card>
   );
 };
 

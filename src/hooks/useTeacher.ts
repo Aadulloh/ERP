@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TeacherService } from "@services";
+import { TeacherService } from "@service";
 import type { Teacher } from "@types";
 import { message } from "antd";
 

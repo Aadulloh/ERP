@@ -1,22 +1,24 @@
+import { Button, Popconfirm as AntPopconfirm  } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Popconfirm } from "antd";
 interface PopConfirmProps {
-  handleDelete: () => void;
+  onConfirm: () => void;
+  title?: string;
+  loading?: boolean;
 }
 
-const PopConfirm = ({ handleDelete }: PopConfirmProps) => {
+const PopConfirm = ({ onConfirm, title }: PopConfirmProps) => {
   return (
-    <Popconfirm
-      title="Delete the task"
-      description="Are you sure to delete this task?"
+    <AntPopconfirm 
+      title={title || "Delete the item"}
+      description="Are you sure to delete this item?"
       okText="Yes"
       cancelText="No"
-      onConfirm={handleDelete}
+      onConfirm={onConfirm}
     >
       <Button type="primary" danger>
         <DeleteOutlined />
       </Button>
-    </Popconfirm>
+    </AntPopconfirm>
   );
 };
 

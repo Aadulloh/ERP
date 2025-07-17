@@ -1,24 +1,25 @@
-import { lazy } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from "react-router-dom";
+import { lazy } from "react";
 import {
   SignIn,
   SignUp,
-  NotFound,
+  AdminLayout,
   TeacherLayout,
   StudentLayout,
-  AdminLayout,
-  Groups,
-  Courses,
-  Branches,
+  Course,
   ProtectChildrem,
   LoginChildren,
-  Settings
+  Branch,
+  Worker,
+  Groups,
+  SingleGroup,
 } from "@pages";
+import Notfoun from "../not-found/notfoun";
 const App = lazy(() => import("../App"));
 
 const Router = () => {
@@ -28,31 +29,30 @@ const Router = () => {
         <Route
           index
           element={
-            // <LoginChildren>
-            <SignIn />
-            // </LoginChildren>
+            <LoginChildren>
+              <SignIn />
+            </LoginChildren>
           }
         />
         <Route path="sign-up" element={<SignUp />} />
-
         <Route
-          path="admin"
+          path="admin/"
           element={
             <ProtectChildrem>
               <AdminLayout />
             </ProtectChildrem>
           }
         >
-          <Route path="groups" element={<Groups />} />
-          <Route path="courses" element={<Courses />} />
-          <Route path="branches" element={<Branches />} />
-          <Route path="settings" element={<Settings />} />
+          {/* <Route element={<Groups />} /> */}
+          <Route path="group" element={<Groups />} />
+          <Route path="courses" element={<Course />} />
+          <Route path="branches" element={<Branch />} />
+          <Route path="student" element={<StudentLayout />}></Route>
+          <Route path="teacher" element={<TeacherLayout />}></Route>
+          <Route path="group/:id" element={<SingleGroup />}></Route>
         </Route>
-
-        <Route path="teacher" element={<TeacherLayout />}></Route>
-        <Route path="student" element={<StudentLayout />}></Route>
-
-        <Route path="*" element={<NotFound />} />
+        <Route path="worker" element={<Worker />}></Route>
+        <Route path="*" element={<Notfoun />}></Route>
       </Route>
     )
   );
