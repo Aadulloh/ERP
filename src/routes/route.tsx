@@ -17,7 +17,7 @@ import {
   Branch,
   Groups,
 } from "@pages";
-import Notfoun from "../pages/not-found/notfoun";
+import Notfoun from "../pages/not-found/not-found";
 const App = lazy(() => import("../App"));
 
 const Router = () => {
