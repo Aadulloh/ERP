@@ -114,7 +114,7 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
                     <MaskedInput
                       {...field}
                       onBlur={field.onBlur}
-                      mask="+\9\9\8 (00) 000-00-00"
+                      mask="+998 (00) 000-00-00"
                     />
                   )}
                 </Field>
