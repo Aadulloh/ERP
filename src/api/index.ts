@@ -16,7 +16,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response && error.response.status === 401) {
-      console.log("Error: token chiridi krch");
+      console.log("Error: token eskirdi");
       window.location.href = "/";
       clearStorage();
     }
