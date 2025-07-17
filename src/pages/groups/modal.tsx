@@ -11,6 +11,7 @@ import * as Yup from "yup";
 import dayjs from "dayjs";
 import type { Group } from "@types";
 import { useCourse, useGroup } from "@hooks";
+import type { Course } from "@types";
 
 const { Option } = Select;
 
@@ -89,7 +90,7 @@ const GroupModal: React.FC<GroupModalProps> = ({
                 placeholder="Choose course"
                 style={{ width: "100%" }}
               >
-                {courses.map((course: any) => (
+                {courses.map((course: Course) => (
                   <Option key={course.id} value={course.id}>
                     {course.title}
                   </Option>

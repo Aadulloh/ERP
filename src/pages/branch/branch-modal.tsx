@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import type { Branch } from "@types";
 import { MaskedInput } from "antd-mask-input";
+import type { FieldProps } from "formik";
 
 interface BranchModalProps {
   visible: boolean;
@@ -67,7 +68,7 @@ const BranchModal: React.FC<BranchModalProps> = ({
 
             <AntForm.Item label="Phone" labelCol={{ span: 24 }}>
               <Field name="call_number">
-                {({ field }: any) => (
+                {({ field }: FieldProps) => (
                   <MaskedInput
                     {...field}
                     value={field.value || ""}

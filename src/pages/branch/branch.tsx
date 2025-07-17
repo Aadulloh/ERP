@@ -6,6 +6,7 @@ import { PopConfirm } from "@components";
 import { useLocation } from "react-router-dom";
 import { useGeneral, useBranch } from "@hooks";
 import { EditOutlined } from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
 
 interface BranchWithId extends Branch {
   id: number;
@@ -60,7 +61,7 @@ const Branch = () => {
 
   const handleSubmit = (values: Branch) => {
     if (mode === "create") {
-      const { id, ...createData } = values;
+      const { ...createData } = values;
       createFn(createData as Omit<Branch, "id">, {
         onSuccess: () => {
           toggle();
@@ -94,7 +95,7 @@ const Branch = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: BranchWithId) => (
+      render: (_: ColumnsType, record: BranchWithId) => (
         <Space size="middle">
           <Button type="primary" onClick={() => editItem(record)}>
             <EditOutlined />

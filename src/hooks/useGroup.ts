@@ -2,6 +2,7 @@ import { GroupService } from "@service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Group, type ParamsType } from "@types";
 import { useNavigate } from "react-router-dom";
+
 export const useGroup = (params: ParamsType) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -9,7 +10,7 @@ export const useGroup = (params: ParamsType) => {
     queryKey: ["groups", params],
     queryFn: async () => GroupService.getGroups(params),
   });
-  const handlePagination = (pagination: any, setParams: any)=>{
+  const handlePagination = (pagination: any, setParams: any) => {
     const { current, pageSize } = pagination;
     setParams({
       page: current!,
@@ -19,7 +20,7 @@ export const useGroup = (params: ParamsType) => {
     searchParams.set("page", current!.toString());
     searchParams.set("limit", pageSize!.toString());
     navigate({ search: `?${searchParams.toString()}` });
-  }
+  };
 
   const useGroupCreate = () => {
     return useMutation({

@@ -12,6 +12,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import { MaskedInput } from "antd-mask-input";
+import type { FieldProps } from "formik";
 
 export interface Student {
   first_name: string;
@@ -92,7 +93,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
         initialValues={initialValues}
         validationSchema={createValidationSchema(isEdit)}
         onSubmit={(values) => {
-          const { confirm_password, ...data } = values;
+          const { ...data } = values;
           return onSubmit(data as Student);
         }}
       >
@@ -121,7 +122,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
             <AntForm.Item label="Phone" labelCol={{ span: 24 }}>
               <Field name="phone">
-                {({ field, form }: any) => (
+                {({ field, form }: FieldProps) => (
                   <MaskedInput
                     {...field}
                     value={field.value || ""}
@@ -166,7 +167,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
             <AntForm.Item label="Gender" labelCol={{ span: 24 }}>
               <Field name="gender">
-                {({ field }: any) => (
+                {({ field }: FieldProps) => (
                   <Select
                     {...field}
                     value={field.value}
@@ -202,7 +203,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
 
             <AntForm.Item label="Lid ID" labelCol={{ span: 24 }}>
               <Field name="lidId">
-                {({ field }: any) => (
+                {({ field }: FieldProps) => (
                   <InputNumber
                     {...field}
                     value={values.lidId}

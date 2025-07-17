@@ -6,6 +6,7 @@ import { PopConfirm } from "@components";
 import { useLocation } from "react-router-dom";
 import { useGeneral, useTeachers, useDeleteTeacher } from "@hooks";
 import { EditOutlined } from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
 
 function TeacherPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +65,7 @@ function TeacherPage() {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: Teacher) => (
+      render: (_: ColumnsType, record: Teacher) => (
         <Space size="middle">
           <Button type="primary" onClick={() => editItem(record)}>
             <EditOutlined />

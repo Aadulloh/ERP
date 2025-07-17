@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { useGeneral, useStudent } from "@hooks";
 import { EditOutlined } from "@ant-design/icons";
 import type { Student } from "@types";
+import type { ColumnsType } from "antd/es/table";
 
 function Student() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -106,7 +107,7 @@ function Student() {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: Student) => (
+      render: (_: ColumnsType, record: Student) => (
         <Space size="middle">
           <Button type="primary" onClick={() => editItem(record)}>
             <EditOutlined />

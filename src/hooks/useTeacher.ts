@@ -9,7 +9,7 @@ export const useTeachers = () => {
     queryKey: ["teacher"],
     queryFn: async () => {
       const res = await TeacherService.getTeachers();
-      return res; // faqat o'qituvchilar arrayi
+      return res;
     },
   });
 };

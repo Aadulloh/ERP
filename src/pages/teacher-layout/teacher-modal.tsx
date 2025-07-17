@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import type { Branch, Teacher } from "@types";
 import { MaskedInput } from "antd-mask-input";
 import { useBranch } from "@hooks";
+import type { FieldProps } from "formik";
 
 interface TeacherModalProps {
   visible: boolean;
@@ -110,7 +111,7 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
 
               <AntForm.Item label="Phone" labelCol={{ span: 24 }}>
                 <Field name="phone">
-                  {({ field }: any) => (
+                  {({ field }: FieldProps) => (
                     <MaskedInput
                       {...field}
                       onBlur={field.onBlur}
@@ -138,7 +139,7 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
 
               <AntForm.Item label="Role" labelCol={{ span: 24 }}>
                 <Field name="role">
-                  {({ field }: any) => (
+                  {({ field }: FieldProps) => (
                     <Select
                       {...field}
                       value={field.value}
@@ -161,7 +162,7 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
 
               <AntForm.Item label="Branches" labelCol={{ span: 24 }}>
                 <Field name="branchId">
-                  {({ field }: any) => (
+                  {({ field }: FieldProps) => (
                     <Select
                       {...field}
                       mode="multiple"

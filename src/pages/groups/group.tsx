@@ -3,9 +3,11 @@ import { Button, Space, Table, type TablePaginationConfig } from "antd";
 import GroupModal from "./modal";
 import type { Group } from "@types";
 import { PopConfirm, GroupColumns } from "@components";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGeneral, useGroup } from "@hooks";
 import { EditOutlined } from "@ant-design/icons";
+import type { ColumnsType } from "antd/es/table";
+
 function Groups() {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
@@ -51,7 +53,7 @@ function Groups() {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: Group) => (
+      render: (_: ColumnsType, record: Group) => (
         <Space size="middle">
           <Button type="primary" onClick={() => editItem(record)}>
             <EditOutlined />
