@@ -9,54 +9,11 @@ import {
   Select,
 } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import dayjs from "dayjs";
 import { MaskedInput } from "antd-mask-input";
 import type { FieldProps } from "formik";
-
-export interface Student {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  password_hash: string;
-  confirm_password: string;
-  gender: string;
-  date_of_birth: string;
-  lidId: number;
-}
-
-interface StudentModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSubmit: (values: Student) => Promise<void>;
-  editData?: Student;
-  mode: "create" | "update";
-  loading?: boolean;
-}
-
-const createValidationSchema = (isEdit: boolean) =>
-  Yup.object({
-    first_name: Yup.string().required("First name is required"),
-    last_name: Yup.string().required("Last name is required"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    phone: Yup.string().required("Phone number is required"),
-    gender: Yup.string().required("Gender is required"),
-    date_of_birth: Yup.string().required("Date of birth is required"),
-    lidId: Yup.number().required("Lid ID is required"),
-    ...(isEdit
-      ? {}
-      : {
-          password_hash: Yup.string()
-            .min(8, "Password must be at least 8 characters")
-            .required("Password is required"),
-          confirm_password: Yup.string()
-            .oneOf([Yup.ref("password_hash")], "Passwords do not match")
-            .required("Confirm password is required"),
-        }),
-  });
+import { studentValidationSchema } from "@utility";
+import type { Student, StudentModalProps } from "@types";
 
 const StudentModal: React.FC<StudentModalProps> = ({
   visible,
@@ -91,7 +48,7 @@ const StudentModal: React.FC<StudentModalProps> = ({
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={createValidationSchema(isEdit)}
+        validationSchema={studentValidationSchema(isEdit)}
         onSubmit={(values) => {
           const { ...data } = values;
           return onSubmit(data as Student);

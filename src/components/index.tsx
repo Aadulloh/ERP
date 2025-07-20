@@ -1,4 +1,4 @@
 import PopConfirm from "./pop-confirm";
-import {GroupColumns} from "./table-columns";
+import { GroupColumns, RoomColumns } from "./table-columns";
 
-export { PopConfirm, GroupColumns };
+export { PopConfirm, GroupColumns, RoomColumns };

@@ -5,3 +5,4 @@ export * from "./useBranch"
 export * from "./useStudent"
 export * from "./useTeacher"
 export * from "./useGeneral"
+export * from "./useRoom";

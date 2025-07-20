@@ -1,5 +1,4 @@
 export interface Student {
-  id?: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -9,4 +8,13 @@ export interface Student {
   gender: string;
   date_of_birth: string;
   lidId: number;
+}
+
+export interface StudentModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit: (values: Student) => Promise<void>;
+  editData?: Student;
+  mode: "create" | "update";
+  loading?: boolean;
 }

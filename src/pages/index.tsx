@@ -11,6 +11,7 @@ const Student = lazy(() => import("./student-layout/student"));
 const ProtectChildrem = lazy(() => import("./protect-route/layout-protect"));
 const LoginChildren = lazy(() => import("./protect-route/login-protect"));
 const Branch = lazy(() => import("./branch/branch"));
+const Room = lazy(() => import("./rooms/room"));
 
 export {
   SignIn,
@@ -24,4 +25,5 @@ export {
   ProtectChildrem,
   LoginChildren,
   Branch,
+  Room,
 };

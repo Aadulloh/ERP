@@ -1,4 +1,4 @@
-import { type Group } from "@types";
+import { type Group, type Room } from "@types";
 import type { TableProps } from "antd";
 
 export const GroupColumns: TableProps<Group>["columns"] = [
@@ -27,5 +27,24 @@ export const GroupColumns: TableProps<Group>["columns"] = [
     title: "End Date",
     dataIndex: "end_date",
     key: "end_date",
+  },
+];
+
+export const RoomColumns: TableProps<Room>["columns"] = [
+  {
+    title: "Branches",
+    dataIndex: "branchId",
+    key: "branchId",
+    render: (branch: { name: string }) => <span>{branch?.name}</span>,
+  },
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Capacity",
+    dataIndex: "capacity",
+    key: "capacity",
   },
 ];

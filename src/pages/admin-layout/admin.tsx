@@ -5,6 +5,7 @@ import {
   ForkOutlined,
   TeamOutlined,
   UserOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Button, Layout, Menu, theme } from "antd";
@@ -48,6 +49,11 @@ const items: MenuProps["items"] = [
     key: "5",
     icon: React.createElement(UserOutlined),
     label: <Link to="/admin/teacher">Teacher</Link>,
+  },
+  {
+    key: "6",
+    icon: React.createElement(HomeOutlined),
+    label: <Link to="/admin/room">Room</Link>,
   },
 ];
 

@@ -1,42 +1,15 @@
 import React from "react";
 import { Modal, Input, Form as AntForm, Button, Select, Spin } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import type { Branch, Teacher } from "@types";
+import type { Branch, Teacher, TeacherModalProps } from "@types";
 import { MaskedInput } from "antd-mask-input";
 import { useBranch } from "@hooks";
 import type { FieldProps } from "formik";
-
-interface TeacherModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSubmit: (values: Teacher) => Promise<void>;
-  editData?: Teacher;
-  mode: "create" | "update";
-}
+import { teacherValidationSchema } from "@utility";
 
 const roles = ["assistant teacher", "main teacher"];
 
-const validationSchema = (isEdit: boolean) =>
-  Yup.object({
-    first_name: Yup.string().required("First name is required"),
-    last_name: Yup.string().required("Last name is required"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    phone: Yup.string().required("Phone number is required"),
-    role: Yup.string().required("Role is required"),
-    branchId: Yup.array()
-      .min(1, "At least one branch must be selected")
-      .required(),
-    ...(isEdit
-      ? {}
-      : {
-          password: Yup.string()
-            .min(6, "Password must be at least 6 characters")
-            .required("Password is required"),
-        }),
-  });
+
 
 const TeacherModal: React.FC<TeacherModalProps> = ({
   visible,
@@ -75,7 +48,7 @@ const TeacherModal: React.FC<TeacherModalProps> = ({
         <Formik
           enableReinitialize
           initialValues={initialValues}
-          validationSchema={validationSchema(isEdit)}
+          validationSchema={teacherValidationSchema(isEdit)}
           onSubmit={onSubmit}
         >
           {({ setFieldValue }) => (

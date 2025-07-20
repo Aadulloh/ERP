@@ -1,25 +1,10 @@
 import React from "react";
 import { Modal, Input, Form as AntForm, Button } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import type { Branch } from "@types";
+import type { Branch, BranchModalProps } from "@types";
 import { MaskedInput } from "antd-mask-input";
 import type { FieldProps } from "formik";
-
-interface BranchModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSubmit: (values: Branch) => void;
-  editData?: Branch;
-  mode: "create" | "update";
-  loading?: boolean;
-}
-
-const validationSchema = Yup.object({
-  name: Yup.string().required("Branch name is required"),
-  address: Yup.string().required("Address is required"),
-  call_number: Yup.string().required("Phone number is required"),
-});
+import { branchValidationSchema } from "../../utility";
 
 const BranchModal: React.FC<BranchModalProps> = ({
   visible,
@@ -47,7 +32,7 @@ const BranchModal: React.FC<BranchModalProps> = ({
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={branchValidationSchema}
         onSubmit={onSubmit}
       >
         {() => (

@@ -8,3 +8,11 @@ export interface Teacher {
   role: string;
   branchId: number[];
 }
+
+export interface TeacherModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit: (values: Teacher) => Promise<void>;
+  editData?: Teacher;
+  mode: "create" | "update";
+}

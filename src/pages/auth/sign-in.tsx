@@ -2,21 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { setItem } from "../../helpers";
 import { Button, Card, Input, Select, message, Typography } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { useAuth } from "@hooks";
+import { signInValidationSchema } from "@utility";
 
 const { Option } = Select;
 const { Title } = Typography;
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Please enter a valid email address!")
-    .required("Please input your email!"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters!")
-    .required("Please input your password!"),
-  role: Yup.string().required("Please select your role!"),
-});
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -52,7 +42,7 @@ const SignIn = () => {
 
       <Formik
         initialValues={{ email: "", password: "", role: "" }}
-        validationSchema={validationSchema}
+        validationSchema={signInValidationSchema}
         onSubmit={handleSubmit}
       >
         {({ setFieldValue, values, errors, touched }) => (

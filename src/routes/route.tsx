@@ -16,6 +16,7 @@ import {
   LoginChildren,
   Branch,
   Groups,
+  Room
 } from "@pages";
 import Notfoun from "../pages/not-found/not-found";
 const App = lazy(() => import("../App"));
@@ -46,6 +47,7 @@ const Router = () => {
           <Route path="branches" element={<Branch />} />
           <Route path="student" element={<StudentLayout />}></Route>
           <Route path="teacher" element={<TeacherLayout />}></Route>
+          <Route path="room" element={<Room />}></Route>
         </Route>
         <Route path="*" element={<Notfoun />}></Route>
       </Route>
