@@ -4,7 +4,26 @@ import type { Group, ParamsType } from "@types";
 
 export const GroupService = {
   async getGroups(params: ParamsType) {
-    const res = await apiConfig().getRequest(ApiUrls.GROUPS, params );
+    const res = await apiConfig().getRequest(ApiUrls.GROUPS, params);
+    return res;
+  },
+
+  async getGroupsStudent(id: number) {
+    const res = await apiConfig().getRequest(
+      `${ApiUrls.GROUP_STUDENTS_BY_GROUP_ID}/${id}`
+    );
+    return res;
+  },
+
+  async getGroupsLessons(id: number) {
+    const res = await apiConfig().getRequest(`${ApiUrls.GROUP_LESSONS}/${id}`);
+    return res;
+  },
+
+  async getGroupsTeachers(id: number) {
+    const res = await apiConfig().getRequest(
+      `${ApiUrls.GROUP_TEACHERS_BY_GROUP_ID}/${id}`
+    );
     return res;
   },
 

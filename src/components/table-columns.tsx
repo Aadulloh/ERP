@@ -1,4 +1,4 @@
-import { type Group, type Room } from "@types";
+import { type Group, type Room, type Teacher } from "@types";
 import type { TableProps } from "antd";
 
 export const GroupColumns: TableProps<Group>["columns"] = [
@@ -28,6 +28,14 @@ export const GroupColumns: TableProps<Group>["columns"] = [
     dataIndex: "end_date",
     key: "end_date",
   },
+];
+
+export const TeacherColumns: TableProps<Teacher>["columns"] = [
+  { title: "First Name", dataIndex: "first_name", key: "first_name" },
+  { title: "Last Name", dataIndex: "last_name", key: "last_name" },
+  { title: "Email", dataIndex: "email", key: "email" },
+  { title: "Phone", dataIndex: "phone", key: "phone" },
+  { title: "Role", dataIndex: "role", key: "role" },
 ];
 
 export const RoomColumns: TableProps<Room>["columns"] = [

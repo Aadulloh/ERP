@@ -3,9 +3,9 @@ import { Button, Space, Table, type TablePaginationConfig } from "antd";
 import GroupModal from "./modal";
 import type { Group } from "@types";
 import { PopConfirm, GroupColumns } from "@components";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useGeneral, useGroup } from "@hooks";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 
 function Groups() {
@@ -62,6 +62,9 @@ function Groups() {
             onConfirm={() => deleteItem(record.id!)}
             loading={isDeleting}
           />
+          <Link to={`${record.id}`}>
+            <EyeOutlined style={{ fontSize: "1.2rem" }} />
+          </Link>
         </Space>
       ),
     },
